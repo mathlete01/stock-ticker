@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { iex } from "../config/iex.js";
+import { Link, BrowserRouter } from "react-router-dom";
 
 function isMarketOpen() {
   const now = new Date();
@@ -30,7 +31,7 @@ function Home() {
       .then((res) => res.json())
       .then(
         (data) => {
-          //   console.log(data[data.length - 1]);
+          console.log(data[data.length - 1]);
           setIsLoaded(true);
           setData(data[data.length - 1]);
         },
@@ -85,7 +86,12 @@ function Home() {
           placeholder="Enter ticker symbol"
         ></input>
         <button onClick={updateTicker}>Submit</button>
-        {ticker}: ${data.average}
+        <BrowserRouter>
+          {/* <Link to={`/stock/${ticker}`}> */}
+          <Link to={`/${ticker}`}>
+            {ticker}: ${data.close}
+          </Link>
+        </BrowserRouter>
       </>
     );
   }
