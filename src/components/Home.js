@@ -24,9 +24,8 @@ function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [ticker, setTicker] = useState("");
   const url = `${iex.base_url}/stock/${ticker}/intraday-prices?chartLast=1&token=${iex.api_token}`;
-
+  console.log(`ticker = `, ticker);
   function updateTicker() {
-    console.log(`ticker = `, ticker);
     fetch(url)
       .then((res) => res.json())
       .then(
@@ -41,25 +40,55 @@ function Home() {
         }
       );
   }
-
-  return (
-    <>
-      <h2>Home</h2>
-      <p>The market is {isMarketOpen()}</p>
-      <input
-        type="text"
-        ticker={ticker}
-        value={ticker}
-        onChange={(e) => setTicker(e.currentTarget.value)}
-        placeholder="Enter ticker symbol"
-      ></input>
-      <button onClick={updateTicker}>Submit</button>
-
-      <p>
+  if (error) {
+    return (
+      <>
+        <h2>Home</h2>
+        <p>The market is {isMarketOpen()}</p>
+        <input
+          type="text"
+          ticker={ticker}
+          value={ticker}
+          onChange={(e) => setTicker(e.currentTarget.value)}
+          placeholder="Enter ticker symbol"
+        ></input>
+        <button onClick={updateTicker}>Submit</button>
+        Error: {error.message}
+      </>
+    );
+  } else if (!isLoaded) {
+    return (
+      <>
+        <h2>Home</h2>
+        <p>The market is {isMarketOpen()}</p>
+        <input
+          type="text"
+          ticker={ticker}
+          value={ticker}
+          onChange={(e) => setTicker(e.currentTarget.value)}
+          placeholder="Enter ticker symbol"
+        ></input>
+        <button onClick={updateTicker}>Submit</button>
+        Loading...
+      </>
+    );
+  } else {
+    return (
+      <>
+        <h2>Home</h2>
+        <p>The market is {isMarketOpen()}</p>
+        <input
+          type="text"
+          ticker={ticker}
+          value={ticker}
+          onChange={(e) => setTicker(e.currentTarget.value)}
+          placeholder="Enter ticker symbol"
+        ></input>
+        <button onClick={updateTicker}>Submit</button>
         {ticker}: ${data.average}
-      </p>
-    </>
-  );
+      </>
+    );
+  }
 }
 
 export default Home;
