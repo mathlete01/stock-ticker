@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { iex } from "../config/iex.js";
+import { Link, BrowserRouter } from "react-router-dom";
 
 function isMarketOpen() {
   const now = new Date();
@@ -24,14 +25,11 @@ function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [ticker, setTicker] = useState("");
   const url = `${iex.base_url}/stock/${ticker}/intraday-prices?chartLast=1&token=${iex.api_token}`;
-
   function updateTicker() {
-    console.log(`ticker = `, ticker);
     fetch(url)
       .then((res) => res.json())
       .then(
         (data) => {
-          //   console.log(data[data.length - 1]);
           setIsLoaded(true);
           setData(data[data.length - 1]);
         },
@@ -41,11 +39,28 @@ function Home() {
         }
       );
   }
+  //----------------
+  let message;
+  if (error) {
+    message = "Sorry, we can't find that symbol";
+  } else if (!isLoaded) {
+    message = "";
+  } else {
+    message = (
+      <BrowserRouter>
+        <Link to={`/stock/${ticker}`}>
+          {/* <Link to={`${ticker}`}> */}
+          {ticker}: Closing Price: ${data.close}
+        </Link>
+      </BrowserRouter>
+    );
+  }
 
   return (
     <>
       <h2>Home</h2>
       <p>The market is {isMarketOpen()}</p>
+
       <input
         type="text"
         ticker={ticker}
@@ -54,10 +69,7 @@ function Home() {
         placeholder="Enter ticker symbol"
       ></input>
       <button onClick={updateTicker}>Submit</button>
-
-      <p>
-        {ticker}: ${data.average}
-      </p>
+      {message}
     </>
   );
 }
