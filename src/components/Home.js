@@ -25,13 +25,11 @@ function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [ticker, setTicker] = useState("");
   const url = `${iex.base_url}/stock/${ticker}/intraday-prices?chartLast=1&token=${iex.api_token}`;
-  console.log(`ticker = `, ticker);
   function updateTicker() {
     fetch(url)
       .then((res) => res.json())
       .then(
         (data) => {
-          console.log(data[data.length - 1]);
           setIsLoaded(true);
           setData(data[data.length - 1]);
         },
@@ -41,60 +39,39 @@ function Home() {
         }
       );
   }
+  //----------------
+  let message;
   if (error) {
-    return (
-      <>
-        <h2>Home</h2>
-        <p>The market is {isMarketOpen()}</p>
-        <input
-          type="text"
-          ticker={ticker}
-          value={ticker}
-          onChange={(e) => setTicker(e.currentTarget.value)}
-          placeholder="Enter ticker symbol"
-        ></input>
-        <button onClick={updateTicker}>Submit</button>
-        Error: {error.message}
-      </>
-    );
+    message = "Sorry, we can't find that symbol";
   } else if (!isLoaded) {
-    return (
-      <>
-        <h2>Home</h2>
-        <p>The market is {isMarketOpen()}</p>
-        <input
-          type="text"
-          ticker={ticker}
-          value={ticker}
-          onChange={(e) => setTicker(e.currentTarget.value)}
-          placeholder="Enter ticker symbol"
-        ></input>
-        <button onClick={updateTicker}>Submit</button>
-        Loading...
-      </>
-    );
+    message = "";
   } else {
-    return (
-      <>
-        <h2>Home</h2>
-        <p>The market is {isMarketOpen()}</p>
-        <input
-          type="text"
-          ticker={ticker}
-          value={ticker}
-          onChange={(e) => setTicker(e.currentTarget.value)}
-          placeholder="Enter ticker symbol"
-        ></input>
-        <button onClick={updateTicker}>Submit</button>
-        <BrowserRouter>
-          {/* <Link to={`/stock/${ticker}`}> */}
-          <Link to={`/${ticker}`}>
-            {ticker}: ${data.close}
-          </Link>
-        </BrowserRouter>
-      </>
+    message = (
+      <BrowserRouter>
+        <Link to={`/stock/${ticker}`}>
+          {/* <Link to={`${ticker}`}> */}
+          {ticker}: Closing Price: ${data.close}
+        </Link>
+      </BrowserRouter>
     );
   }
+
+  return (
+    <>
+      <h2>Home</h2>
+      <p>The market is {isMarketOpen()}</p>
+
+      <input
+        type="text"
+        ticker={ticker}
+        value={ticker}
+        onChange={(e) => setTicker(e.currentTarget.value)}
+        placeholder="Enter ticker symbol"
+      ></input>
+      <button onClick={updateTicker}>Submit</button>
+      {message}
+    </>
+  );
 }
 
 export default Home;

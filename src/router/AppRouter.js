@@ -16,8 +16,8 @@ const AppRouter = () => {
           <StocksContext.Provider value={{ stocks, setStocks }}>
             <Switch>
               <Route component={Home} path="/" exact={true} />
-              {/* <Route component={StockPage} path="/stock/:ticker" /> */}
-              <Route component={StockPage} path="/:ticker" />
+              <Route component={StockPage} path="/stock/:ticker" />
+              {/* <Route component={StockPage} path=":ticker" /> */}
             </Switch>
           </StocksContext.Provider>
         </div>
